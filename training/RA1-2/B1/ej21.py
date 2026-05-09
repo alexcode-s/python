@@ -1,9 +1,9 @@
-n = int(input("Número: "))
-rc = round(n ** 0.5)+1
-primo = True
+# Programa que pida un número por teclado y calcule si es primo o no.
 
-for i in range(rc):
-    if i % n != 0 and n % n != 0:
-        primo = False
+n = int(input("Número: "))
+primo = False
+
+if n >= 2:
+     primo = not any(n % i == 0 for i in range(2, int(n ** 0.5) + 1)) # Si encuentra uno = True
 
 print("Primo" if primo else "No es primo")

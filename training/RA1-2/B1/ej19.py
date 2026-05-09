@@ -1,3 +1,5 @@
+# Programa que pida un número por teclado y muestre sus divisores.
+
 n = int(input("Número: "))
 print(f"Divisores de {n}: ")
 
