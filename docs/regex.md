@@ -1,0 +1,62 @@
+# Expresiones regulares
+
+- **Metacaracteres básicos**
+    - `.` → Cualquier carácter excepto el salto de línea.
+    - `^` → Inicio de cadena.
+    - `$` → Final de cadena.
+    - `[]`→ Clase de caracteres.
+    - `[^]` → Clase negada.
+    - `()` → Grupo capturado. Agrupa varias alternativas dentro. (”esto o aquello”)
+    - `(?:…)` → Grupo no capturado.
+    - `(?P<name>…)` → Grupo capturado con nombre.
+    - `(?P=name)` → Referencia a grupo por nombre.
+- **Clases predefinidas**
+    - `\d` → Dígito (0-9).
+    - `\D` → No dígito.
+    - `\w` → Alfanumérico y _.
+    - `\W` → No alfanumérico.
+    - `\s` → Espacio en blanco.
+    - `\S` → No espacio.
+- **Cuantificadores**
+    - `*` → 0 o más.
+    - `+` → 1 o más.
+    - `?` → 0 o 1 (opcional).
+    - `{n}` → Exactamente n.
+    - `{n,}` → n o más.
+    - `{,m}` → Hasta m.
+    - `{n,m}` → Entre n y m.
+    - Variante “non-greedy”:
+        - `*?` → 0 o más, mínimo.
+        - `+?` → 1 o más, mínimo.
+        - `??` → Opcional mínimo.
+        - `{n,m}?` → Rango mínimo.
+- **Anclas**
+    - `^` → Inicio de una cadena o inicio de una línea.
+    - `$` → Final de cadena.
+    - `\A` → Inicio absoluto (no multiline).
+    - `\Z` → Final absoluto (no multiline).
+    - `\b` → Límite de palabra.
+    - `\B` → No límite de palabra.
+- **Grupos y backreferences**
+    - `(…)` → Grupo capturado.
+    - `(?:…)` → Grupo no capturado.
+    - `(?P<name>…)` → Grupo con nombre.
+    - `\1`, `\2`, … → Referencia al grupo n.
+    - `(?P=name)` → Referencia por nombre.
+- **Clases de caracteres detalladas**
+    - `[abc]` → a, b o c.
+    - `[a-z]` → Rango (a-z).
+    - `[^abc]` → Todo menos a, b y c.
+    - `\d`, `\s`, `\w` → Funcionan igual que fuera.
+    - `-` → Literal si se escapa: \-
+    - `]` → Literal si es el primero.
+- **Lookaraound**
+    
+    
+- **Flags**
+- **Secuencias de escape**
+    - `\n` → Salto de línea.
+    - `\t` → Tabulación.
+    - `\\` → La barra invertida literal.
+    - `\.` → Punto
+- **Caracteres literales**
