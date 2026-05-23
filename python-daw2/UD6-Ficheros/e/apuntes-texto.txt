@@ -1,0 +1,93 @@
+# =================================================================
+# GUÍA TÉCNICA: MANEJO DE FICHEROS DE TEXTO (.txt)
+# =================================================================
+
+"""
+MODOS DE APERTURA:
+'r'  -> Leer (Default). Falla si no existe.
+'w'  -> Escribir (Sobrescribe todo el contenido).
+'a'  -> Añadir (Escribe al final sin borrar lo anterior).
+'r+' -> Lectura y escritura simultánea.
+"""
+
+# -----------------------------------------------------------------
+# 1. LECTURA SEGURA Y LIMPIEZA
+# -----------------------------------------------------------------
+def leer_archivo(ruta):
+    try:
+        # Usar encoding='utf-8' evita errores con tildes y la 'ñ'
+        with open(ruta, "r", encoding="utf-8") as f:
+            # Opción A: Todo el contenido en un solo string
+            # contenido = f.read()
+
+            # Opción B: Lista de líneas (incluye el \n al final de cada una)
+            lineas = f.readlines()
+
+            # Limpiar saltos de línea y espacios sobrantes
+            lineas_limpias = [l.strip() for l in lineas if l.strip()]
+            return lineas_limpias
+    except FileNotFoundError:
+        return []
+
+# -----------------------------------------------------------------
+# 2. ESCRITURA Y ANEXO
+# -----------------------------------------------------------------
+def escribir_archivo(ruta, lista_datos):
+    """Escribe una lista de strings, cada uno en una línea nueva."""
+    with open(ruta, "w", encoding="utf-8") as f:
+        for linea in lista_datos:
+            f.write(f"{linea}\n")
+
+def añadir_linea(ruta, nueva_linea):
+    """Añade contenido al final del archivo sin borrar lo previo."""
+    with open(ruta, "a", encoding="utf-8") as f:
+        f.write(f"{nueva_linea}\n")
+
+# -----------------------------------------------------------------
+# 3. PROCESAMIENTO DE DATOS ESTRUCTURADOS (SPLIT)
+# -----------------------------------------------------------------
+def procesar_datos(linea):
+    """
+    Ejemplo para una línea tipo: "Pérez, Juan : 25"
+    """
+    # Separar por el delimitador principal
+    partes = linea.split(":")
+
+    # Limpiar y volver a separar
+    datos_personales = partes[0].strip().split(",")
+    apellido = datos_personales[0].strip()
+    nombre = datos_personales[1].strip()
+    edad = int(partes[1].strip())
+
+    return nombre, apellido, edad
+
+# -----------------------------------------------------------------
+# 4. EL CURSOR (TELL Y SEEK)
+# -----------------------------------------------------------------
+def ejemplo_cursor(ruta):
+    with open(ruta, "r", encoding="utf-8") as f:
+        print(f"Posición inicial: {f.tell()}")
+        primeros_diez = f.read(10)
+        print(f"Nueva posición: {f.tell()}")
+
+        # Volver al principio
+        f.seek(0)
+        print("Cursor reseteado al inicio.")
+
+# -----------------------------------------------------------------
+# EJEMPLO DE USO
+# -----------------------------------------------------------------
+if __name__ == "__main__":
+    fichero = "mi_lista.txt"
+
+    # 1. Escribir
+    nombres = ["García, Ana", "López, Pedro", "Sanz, Marta"]
+    escribir_archivo(fichero, nombres)
+
+    # 2. Añadir
+    añadir_linea(fichero, "Vera, Luis")
+
+    # 3. Leer y procesar
+    datos = leer_archivo(fichero)
+    for d in datos:
+        print(f"Procesando: {d}")

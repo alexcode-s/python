@@ -1,0 +1,61 @@
+MODOS DE APERTURA
+
+"wb" → escritura binaria
+
+"rb" → lectura binaria
+
+Ejemplos:
+
+with open("datos.dat", "wb") as f:
+...
+
+with open("datos.dat", "rb") as f:
+...
+
+GUARDAR DATOS EN BINARIO
+
+Se usa pickle.dump(objeto, fichero)
+
+Ejemplo típico (guardar una lista):
+
+with open("pokemon.dat", "wb") as f:
+pickle.dump(lista_pokemons, f)
+
+Notas importantes:
+
+Se guarda el objeto COMPLETO (lista, clase, etc.)
+
+No importa cuántos elementos tenga
+
+Sobrescribe el fichero si ya existe
+
+LEER DATOS DE UN BINARIO
+
+Se usa pickle.load(fichero)
+
+Ejemplo:
+
+with open("pokemon.dat", "rb") as f:
+lista_pokemons = pickle.load(f)
+
+Notas:
+
+Se recupera exactamente lo que se guardó
+
+El orden y los tipos se conservan
+
+Las clases deben existir en el programa al leer
+
+ESTRUCTURA BÁSICA CON TRY–EXCEPT (EXAMEN)
+
+try:
+with open("datos.dat", "wb") as f:
+pickle.dump(datos, f)
+except IOError:
+print("Error al escribir el fichero binario")
+
+try:
+with open("datos.dat", "rb") as f:
+datos = pickle.load(f)
+except IOError:
+print("Error al leer el fichero binario")

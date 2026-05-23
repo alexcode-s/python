@@ -1,0 +1,90 @@
+# =================================================================
+# GUÍA TÉCNICA: PERSISTENCIA DE OBJETOS CON PICKLE
+# =================================================================
+import pickle
+import os
+
+"""
+MODOS DE APERTURA BINARIA:
+'rb' -> Read Binary (Leer). Falla si el archivo no existe.
+'wb' -> Write Binary (Escribir/Sobrescribir). Crea el archivo si no existe.
+'ab' -> Append Binary (Añadir). Útil para logs, pero complejo para objetos.
+"""
+
+# -----------------------------------------------------------------
+# 1. COMPROBACIONES DE SEGURIDAD
+# -----------------------------------------------------------------
+def esta_listo(ruta):
+    # Verifica si el archivo existe y si tiene datos (evita EOFError)
+    return os.path.exists(ruta) and os.path.getsize(ruta) > 0
+
+
+# -----------------------------------------------------------------
+# 2. ESCRITURA (SERIALIZACIÓN)
+# -----------------------------------------------------------------
+def guardar_datos(ruta, datos):
+    """Guarda cualquier objeto (lista, dict, instancia) en el archivo."""
+    with open(ruta, "wb") as f:
+        pickle.dump(datos, f)
+
+
+# -----------------------------------------------------------------
+# 3. LECTURA (DESERIALIZACIÓN)
+# -----------------------------------------------------------------
+def cargar_datos(ruta):
+    """Recupera el contenido. Si no existe o está vacío, devuelve None."""
+    if esta_listo(ruta):
+        with open(ruta, "rb") as f:
+            return pickle.load(f)
+    return None
+
+
+# -----------------------------------------------------------------
+# 4. PATRÓN DE ACTUALIZACIÓN (EL ESTÁNDAR)
+# -----------------------------------------------------------------
+def actualizar_lista(ruta, nuevo_elemento):
+    """
+    Lee la lista existente, añade el elemento y guarda todo.
+    Es el método más seguro para evitar corrupción de datos.
+    """
+    datos = cargar_datos(ruta)
+
+    # Si cargar_datos devolvió None (fichero vacío o inexistente)
+    if datos is None:
+        datos = []
+
+    datos.append(nuevo_elemento)
+    guardar_datos(ruta, datos)
+
+
+# -----------------------------------------------------------------
+# 5. LECTURA DE MÚLTIPLES OBJETOS (MÉTODO ALTERNATIVO)
+# -----------------------------------------------------------------
+def leer_hasta_el_final(ruta):
+    """
+    Si el archivo se grabó usando 'ab' (append) varias veces,
+    esta es la forma de leer todos los objetos uno por uno.
+    """
+    objetos = []
+    if esta_listo(ruta):
+        with open(ruta, "rb") as f:
+            while True:
+                try:
+                    objetos.append(pickle.load(f))
+                except EOFError:
+                    break # Se llegó al final del archivo
+    return objetos
+
+# -----------------------------------------------------------------
+# EJEMPLO DE USO RÁPIDO
+# -----------------------------------------------------------------
+if __name__ == "__main__":
+    fichero = "mi_almacen.bin"
+
+    # Guardar una estructura compleja
+    config = {"tema": "oscuro", "volumen": 80, "niveles": [1, 2, 3]}
+    guardar_datos(fichero, config)
+
+    # Recuperar
+    datos_leidos = cargar_datos(fichero)
+    print(f"Datos recuperados: {datos_leidos}")

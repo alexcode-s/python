@@ -1,0 +1,88 @@
+# =================================================================
+# GUÍA TÉCNICA: BASES DE DATOS CON MYSQL-CONNECTOR
+# =================================================================
+import mysql.connector
+from mysql.connector import Error
+
+"""
+DIFERENCIAS CLAVE CON SQLITE:
+1. Necesitas un servidor corriendo (XAMPP, WAMP, Docker, etc.).
+2. Se requiere autenticación (user, password).
+3. El marcador de posición es '%s' en lugar de '?'.
+"""
+
+def gestionar_mysql():
+    conexion = None
+    try:
+        # 1. CONECTAR AL SERVIDOR
+        conexion = mysql.connector.connect(
+            host='localhost',       # O la IP de tu servidor
+            user='root',            # Usuario por defecto en XAMPP
+            password='',            # Contraseña (vacía por defecto en XAMPP)
+            database='mi_pokedex'   # Nombre de la base de datos
+        )
+
+        if conexion.is_connected():
+            cursor = conexion.cursor()
+
+            # 2. CREAR TABLA
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS pokemon (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    nombre VARCHAR(50) NOT NULL,
+                    tipo VARCHAR(20),
+                    nivel INT
+                )
+            """)
+
+            # 3. INSERTAR DATOS (Create)
+            # ¡OJO! Usamos %s como marcador de posición
+            query_insert = "INSERT INTO pokemon (nombre, tipo, nivel) VALUES (%s, %s, %s)"
+            datos_pokemon = ("Pikachu", "Eléctrico", 25)
+
+            cursor.execute(query_insert, datos_pokemon)
+            conexion.commit() # Confirmar cambios
+            print(f"Registro insertado con ID: {cursor.lastrowid}")
+
+            # 4. CONSULTAR DATOS (Read)
+            cursor.execute("SELECT * FROM pokemon")
+
+            # Podemos obtener los resultados con un bucle
+            for (id, nombre, tipo, nivel) in cursor:
+                print(f"ID {id}: {nombre} es tipo {tipo} (Nivel {nivel})")
+
+    except Error as e:
+        print(f"Error al conectar a MySQL: {e}")
+
+    finally:
+        # 5. CERRAR SIEMPRE LA CONEXIÓN
+        if conexion and conexion.is_connected():
+            cursor.close()
+            conexion.close()
+            print("\nConexión a MySQL cerrada.")
+
+# -----------------------------------------------------------------
+# FUNCIÓN PARA CONSULTAS DINÁMICAS (DICCIONARIOS)
+# -----------------------------------------------------------------
+def obtener_como_diccionario(tipo_buscado):
+    """
+    Configurar el cursor para que devuelva diccionarios en vez de tuplas.
+    Esto hace que el código sea mucho más legible.
+    """
+    try:
+        con = mysql.connector.connect(host='localhost', user='root', password='', database='mi_pokedex')
+        # dictionary=True permite acceder por nombre de columna: fila['nombre']
+        cursor = con.cursor(dictionary=True)
+
+        query = "SELECT nombre, nivel FROM pokemon WHERE tipo = %s"
+        cursor.execute(query, (tipo_buscado,))
+
+        return cursor.fetchall()
+    except Error as e:
+        return f"Error: {e}"
+    finally:
+        if con.is_connected():
+            con.close()
+
+if __name__ == "__main__":
+    gestionar_mysql()
