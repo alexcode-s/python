@@ -1,0 +1,26 @@
+# Buscar "enumerate" en todos los .py del directorio actual y subdirectorios
+grep -rn "enumerate" --include="*.py" .
+
+# Lo mismo pero en los .md (apuntes)
+grep -rn "enumerate" --include="*.md" .
+
+# Buscar en todos los archivos de texto (.py + .md + .txt)
+grep -rn "enumerate" --include="*.py" --include="*.md" --include="*.txt" .
+
+# Buscar sin distinguir mayúsculas/minúsculas
+grep -rni "lambda" --include="*.py" .
+
+# Buscar qué archivos contienen la palabra (sin mostrar la línea)
+grep -rl "match" --include="*.py" .
+
+# Encontrar todos los ejercicios que usan try/except
+grep -rl "except" --include="*.py" .
+
+# Buscar un patrón más complejo (ej: cualquier uso de random)
+grep -rn "random\." --include="*.py" .
+
+# Encontrar archivos por nombre
+find . -name "*.py" -path "*B8*"
+
+# Combinar find + grep: buscar "pickle" solo en la carpeta UD6
+grep -rn "pickle" --include="*.py" ./UD6-Ficheros/
